@@ -7,14 +7,15 @@ use Illuminate\Support\Facades\Storage;
 
 class LibroController extends Controller
 {
-    /**
-     * Display a listing of the resource.
+        /**
+     * Display the specified resource.
      *
+     * @param  \App\Models\User  $user
      * @return \Illuminate\Http\Response
      */
     public function index()
     {
-        $datos['libros'] = Libro::paginate(5);
+        $datos['libros'] = Libro::paginate(2);
         return view('libro.index',$datos);
     }
 
@@ -54,6 +55,8 @@ class LibroController extends Controller
     public function show(Libro $libro)
     {
         //
+       
+        
     }
 
     /**
@@ -98,6 +101,7 @@ class LibroController extends Controller
      */
     public function destroy( $id)
     {
+
 
         $libro = Libro::findOrFail($id);
         if(Storage::delete('public/'.$libro->imagen)){

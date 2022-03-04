@@ -23,8 +23,14 @@ Route::resource('libro', LibroController::class)->middleware('auth');
 
 Auth::routes();
 
-Route::get('/home', [LibroController::class, 'index'])->name('home');
-
 Route::group(['middleware' => 'auth'], function () {
 Route::get('/', [LibroController::class, 'index'])->name('home');
+});
+
+Route::get('prueba', function () {
+    return 'Estas logueado correctamente';
+})->middleware('checkAuth');
+
+Route::get('test', function () {
+    return 'No es administrador';
 });
