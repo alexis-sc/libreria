@@ -8,12 +8,7 @@
 
     <a href="{{ url('libro/create') }}">Nuevo libro</a> 
 
-
-
-   
-
-
-<table class="table table-sm">
+<table class="table table-responsive-sm">
     <thead>
         <tr>
             <th>#</th>
@@ -34,7 +29,9 @@
             <td>{{ $libro->nombre }}</td>
             <td>{{ $libro->autor }}</td>
             <td>{{ $libro->descripcion }}</td>
-            <td>{{ $libro->imagen }}</td>
+            <td>
+                <img class="img-thumbnail img-fluid" src="{{asset('storage').'/'.$libro->imagen}}"  alt="">
+            </td>
             <td>
                
 

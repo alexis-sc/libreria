@@ -1,13 +1,14 @@
 <?php
 
 namespace App\Http\Controllers;
+
 use App\Models\Libro;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
 class LibroController extends Controller
 {
-        /**
+    /**
      * Display the specified resource.
      *
      * @param  \App\Models\User  $user
@@ -16,7 +17,7 @@ class LibroController extends Controller
     public function index()
     {
         $datos['libros'] = Libro::paginate(2);
-        return view('libro.index',$datos);
+        return view('libro.index', $datos);
     }
 
     /**
@@ -29,7 +30,7 @@ class LibroController extends Controller
         return view('libro.crear');
     }
 
-    /**
+    /** 
      * Store a newly created resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
@@ -37,13 +38,29 @@ class LibroController extends Controller
      */
     public function store(Request $request)
     {
+
+        $campos = [
+            'nombre' => 'required|string|max:100',
+            'autor' => 'required|string|max:100',
+            'descripcion' => 'required|string|max:100',
+            'imagen' => 'required|max:10000|mimes:jpeg,png,jpg'
+        ];
+
+        $mensaje = [
+            'required' => 'El :attribute es requerido',
+            'imagen.required' => 'La foto es requerida'
+        ];
+
+        $this->validate($request, $campos, $mensaje);
+
+        //$datosLibro = request()->all();
         $datosLibro = request()->except('_token');
-        if($request->hasFile('imagen')){
-            $datosLibro['imagen'] = $request->file('imagen')->store('uploads','public');
+        if ($request->hasFile('imagen')) {
+            $datosLibro['imagen'] = $request->file('imagen')->store('uploads', 'public');
         }
         Libro::insert($datosLibro);
         //return response()->json($datosLibro);
-        return redirect('libro')->with('mensaje','Usuario creado correctamente');
+        return redirect('libro')->with('mensaje', 'Libro creado correctamente');
     }
 
     /**
@@ -55,8 +72,8 @@ class LibroController extends Controller
     public function show(Libro $libro)
     {
         //
-       
-        
+
+
     }
 
     /**
@@ -80,15 +97,15 @@ class LibroController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $datosLibro = request()->except(['_token','_method']);
+        $datosLibro = request()->except(['_token', '_method']);
 
-        if($request->hasFile('imagen')){
+        if ($request->hasFile('imagen')) {
             $libro = Libro::findOrFail($id);
-            Storage::delete('public/'.$libro->imagen);
-            $datosLibro['imagen'] = $request->file('imagen')->store('uploads','public');
+            Storage::delete('public/' . $libro->imagen);
+            $datosLibro['imagen'] = $request->file('imagen')->store('uploads', 'public');
         }
-        
-        Libro::where('id','=',$id)->update($datosLibro);
+
+        Libro::where('id', '=', $id)->update($datosLibro);
         $libro = Libro::findOrFail($id);
         return view('libro.editar', compact('libro'));
     }
@@ -99,15 +116,15 @@ class LibroController extends Controller
      * @param  \App\Models\Libro  $libro
      * @return \Illuminate\Http\Response
      */
-    public function destroy( $id)
+    public function destroy($id)
     {
 
 
         $libro = Libro::findOrFail($id);
-        if(Storage::delete('public/'.$libro->imagen)){
+        if (Storage::delete('public/' . $libro->imagen)) {
             Libro::destroy($id);
         }
 
-        return redirect('libro')->with('mensaje','Usuario eliminado correctamente');
+        return redirect('libro')->with('mensaje', 'Libro eliminado correctamente');
     }
 }
